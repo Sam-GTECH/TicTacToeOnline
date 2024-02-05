@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "Case.h"
 #include "Grid.h"
-#include "Utils.hpp"
+#include "Utils.h"
 
 #include <iostream>
 

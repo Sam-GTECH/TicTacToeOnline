@@ -1,6 +1,6 @@
 #include "GameObject.h"
 #include "SFML/Window/Mouse.hpp"
-#include "Utils.hpp"
+#include "Utils.h"
 
 #include <iostream>
 
