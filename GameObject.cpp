@@ -13,6 +13,13 @@ GameObject::GameObject(float x, float y, int width, int height)
 }
 GameObject::GameObject() {}
 
+void GameObject::postInit() {
+	for (int i = 0; i < children.size(); i++)
+	{
+		children[i]->game = game;
+	}
+}
+
 void GameObject::onKeyInput(sf::RenderWindow& window) {
 	for (int i = 0; i < children.size(); i++)
 	{
@@ -20,7 +27,7 @@ void GameObject::onKeyInput(sf::RenderWindow& window) {
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			sf::Vector2i m_pos = sf::Mouse::getPosition(window);
-			if (Utils::pointOnObject(m_pos, children[i]))
+			if (Utils::pointOnObject(sf::Vector2f(m_pos.x, m_pos.y), children[i]))
 			{
 				children[i]->onMouseClick();
 			}
@@ -52,14 +59,14 @@ void GameObject::draw(sf::RenderWindow& window)
 	}
 }
 
-sf::Vector2i GameObject::getPos()
+sf::Vector2f GameObject::getPos()
 {
-	return sf::Vector2i(x, y);
+	return sf::Vector2f(x, y);
 }
 
-sf::Vector2i GameObject::getSize()
+sf::Vector2f GameObject::getSize()
 {
-	return sf::Vector2i(width, height);
+	return sf::Vector2f(width, height);
 }
 
 void GameObject::addChild(GameObject* obj)
@@ -67,4 +74,5 @@ void GameObject::addChild(GameObject* obj)
 	children.push_back(obj);
 	obj->game = game;
 	obj->parent = this;
+	obj->postInit();
 }

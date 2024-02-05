@@ -3,14 +3,22 @@
 #include <vector>
 
 class GameObject;
+class Grid;
 
 class GameManager
 {
 	public:
 		sf::RenderWindow window;
+		int playerTurn = 1;
+		int victory = 0;
+
+		Grid* grid;
 
 		GameManager(int width, int height);
 		~GameManager();
+
+		void changePlayerTurn();
+		void checkVictory();
 		
 		void gameLoop();
 

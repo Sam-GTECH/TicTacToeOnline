@@ -8,15 +8,18 @@ class Case : public GameObject
 	public:
 		Case(float x, float y);
 
-		void setValue();
-		sf::String getValue();
+		void setValue(int val);
+		int getValue();
 
 		void draw(sf::RenderWindow& window) override;
 		void onMouseClick() override;
 
 	private:
-		sf::String value = "";
+		int value = 0;
 		sf::RectangleShape rect;
+
+		sf::CircleShape player1;
+		sf::RectangleShape player2;
 
 		int width = 60;
 		int height = 60;

@@ -12,8 +12,9 @@ GameManager::GameManager(int width, int height)
     window.setFramerateLimit(60);
     window.setVerticalSyncEnabled(true);
 
-    Grid* grid = new Grid();
-    addChild(grid);
+    Grid* g = new Grid();
+    addChild(g);
+    grid = g;
 }
 
 GameManager::~GameManager()
@@ -35,6 +36,15 @@ void GameManager::gameLoop()
 
         draw();
 	}
+    while (victory > 0)
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
+                victory = 0;
+        }
+    }
     return;
 }
 
@@ -56,7 +66,7 @@ void GameManager::onKeyInput()
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 sf::Vector2i m_pos = sf::Mouse::getPosition(window);
-                if (Utils::pointOnObject(m_pos, children[i]))
+                if (Utils::pointOnObject(sf::Vector2f(m_pos.x, m_pos.y), children[i]))
                 {
                     children[i]->onMouseClick();
                 }
@@ -88,4 +98,21 @@ void GameManager::addChild(GameObject* obj)
     children.push_back(obj);
     obj->game = this;
     obj->parent = obj;
+    obj->postInit();
+}
+
+void GameManager::changePlayerTurn()
+{
+    playerTurn = playerTurn == 1 ? 2 : 1;
+}
+
+void GameManager::checkVictory()
+{
+    if (!grid->checkVictory())
+        changePlayerTurn();
+    else
+    {
+        run = false;
+        victory = playerTurn;
+    }
 }

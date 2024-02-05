@@ -6,5 +6,5 @@
 
 namespace Utils
 {
-    bool pointOnObject(sf::Vector2i pos, GameObject* obj);
+    bool pointOnObject(sf::Vector2f pos, GameObject* obj);
 }

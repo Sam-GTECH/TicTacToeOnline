@@ -1,13 +1,13 @@
 #pragma once
 #include "SFML\Graphics\RenderWindow.hpp"
-
-class GameManager;
+#include "GameManager.h"
 
 class GameObject
 {
 public:
 	GameObject(float x, float y, int width, int height);
 	GameObject();
+	virtual void postInit();
 
 	virtual void onKeyInput(sf::RenderWindow& window);
 	virtual void onMouseClick();
@@ -16,8 +16,8 @@ public:
 
 	virtual void addChild(GameObject* obj);
 
-	sf::Vector2i getPos();
-	sf::Vector2i getSize();
+	sf::Vector2f getPos();
+	sf::Vector2f getSize();
 
 	GameManager* game;
 	GameObject* parent;
