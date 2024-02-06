@@ -80,7 +80,7 @@ void GameManager::onKeyInput()
             else if (is_pressed) {
                 is_pressed = false;
                 for (int j = 0; j < children.size(); j++) {
-                    children[i]->onMouseRelease();
+                    children[j]->onMouseRelease();
                 }
             }
         }
