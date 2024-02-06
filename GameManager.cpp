@@ -43,6 +43,11 @@ void GameManager::gameLoop()
         {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
                 victory = 0;
+            if (event.type == sf::Event::Closed)
+            {
+                victory = 0;
+                break;
+            }
         }
     }
     return;
@@ -65,10 +70,17 @@ void GameManager::onKeyInput()
             children[i]->onKeyInput(window);
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
+                is_pressed = true;
                 sf::Vector2i m_pos = sf::Mouse::getPosition(window);
                 if (Utils::pointOnObject(sf::Vector2f(m_pos.x, m_pos.y), children[i]))
                 {
                     children[i]->onMouseClick();
+                }
+            }
+            else if (is_pressed) {
+                is_pressed = false;
+                for (int j = 0; j < children.size(); j++) {
+                    children[i]->onMouseRelease();
                 }
             }
         }

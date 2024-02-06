@@ -31,4 +31,5 @@ class GameManager
 	private:
 		std::vector<GameObject*> children;
 		bool run = true;
+		bool is_pressed = false;
 };

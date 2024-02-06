@@ -43,6 +43,14 @@ void GameObject::onMouseClick()
 	}
 }
 
+void GameObject::onMouseRelease()
+{
+	for (int i = 0; i < children.size(); i++)
+	{
+		children[i]->onMouseRelease();
+	}
+}
+
 void GameObject::update()
 {
 	for (int i = 0; i < children.size(); i++)

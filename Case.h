@@ -13,6 +13,7 @@ class Case : public GameObject
 
 		void draw(sf::RenderWindow& window) override;
 		void onMouseClick() override;
+		void onMouseRelease() override;
 
 	private:
 		int value = 0;
@@ -23,4 +24,6 @@ class Case : public GameObject
 
 		int width = 60;
 		int height = 60;
+
+		bool is_pressed = false;
 };
