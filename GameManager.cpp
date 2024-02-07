@@ -3,8 +3,13 @@
 #include "Case.h"
 #include "Grid.h"
 #include "Utils.h"
+#include "json.hpp"
+
+#include "PlayingState.h"
 
 #include <iostream>
+
+using json = nlohmann::json;
 
 GameManager::GameManager(int width, int height)
 {
@@ -15,6 +20,11 @@ GameManager::GameManager(int width, int height)
     Grid* g = new Grid();
     addChild(g);
     grid = g;
+
+    PlayingState* statetest;
+    states["PLAYING"] = statetest;
+
+    current_state = "PLAYING";
 }
 
 GameManager::~GameManager()
@@ -30,13 +40,14 @@ void GameManager::gameLoop()
 {
 	while (run && window.isOpen())
 	{
-        onKeyInput();
+
+        handleInput();
 
         update();
 
         draw();
 	}
-    while (victory > 0)
+    /*while (victory > 0)
     {
         sf::Event event;
         while (window.pollEvent(event))
@@ -44,11 +55,11 @@ void GameManager::gameLoop()
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
                 victory = 0;
         }
-    }
+    }*/
     return;
 }
 
-void GameManager::onKeyInput()
+void GameManager::handleInput()
 {
     sf::Event event;
     while (window.pollEvent(event))
@@ -60,36 +71,40 @@ void GameManager::onKeyInput()
             break;
         }
 
-        for (int i = 0; i < children.size(); i++)
-        {
-            children[i]->onKeyInput(window);
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-            {
-                sf::Vector2i m_pos = sf::Mouse::getPosition(window);
-                if (Utils::pointOnObject(sf::Vector2f(m_pos.x, m_pos.y), children[i]))
-                {
-                    children[i]->onMouseClick();
-                }
-            }
-        }
+        states[getState()]->handleInput(this, event);
     }
 }
 
 void GameManager::update()
 {
+    if (states[getState()]->preUpdate(this))
+        return;
+
     for (int i = 0; i < children.size(); i++)
     {
         children[i]->update();
     }
+
+    states[getState()]->postUpdate(this);
 }
 
 void GameManager::draw()
 {
     window.clear(sf::Color(0, 0, 0));
+
+    if (states[getState()]->preDraw(this))
+        return;
+
     for (int i = 0; i < children.size(); i++)
     {
         children[i]->draw(window);
     }
+
+    for (int i = 0; i < state_process.size(); i++)
+    {
+        state_process[i]->postDraw(this);
+    }
+
     window.display();
 }
 
@@ -114,5 +129,24 @@ void GameManager::checkVictory()
     {
         run = false;
         victory = playerTurn;
+    }
+}
+
+void GameManager::setState(std::string newState, bool push)
+{
+    if (!push)
+        state_process.clear();
+    state_process.push_back(states[newState]);
+}
+void GameManager::setState(std::string newState)
+{
+    state_process.push_back(states[newState]);
+}
+
+std::string GameManager::getState()
+{
+    for (const auto& pair : states) {
+        if (pair.second == state_process.back())
+            return pair.first;
     }
 }

@@ -140,6 +140,11 @@
     <ClCompile Include="GameObject.h" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="OnlineManager.cpp" />
+    <ClCompile Include="PlayingState.cpp" />
+    <ClCompile Include="PlayingState.h" />
+    <ClCompile Include="State.cpp" />
+    <ClCompile Include="State.h" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
