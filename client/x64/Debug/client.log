@@ -1,0 +1,3 @@
+﻿  client.cpp
+C:\Users\lguglielmini\source\repos\Sam-GTECH\client\client.cpp(20,10): warning C4101: 'recvbuf' : variable locale non référencée
+  client.vcxproj -> C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\x64\Debug\client.exe
