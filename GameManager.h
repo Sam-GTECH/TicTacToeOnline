@@ -4,7 +4,6 @@
 #include "State.h"
 
 class GameObject;
-class Grid;
 
 class GameManager
 {
@@ -14,18 +13,12 @@ class GameManager
 		std::vector<State*> state_process;
 
 		sf::RenderWindow window;
-		int playerTurn = 1;
 		int victory = 0;
 
 		bool case_is_pressed = false;
 
-		Grid* grid;
-
 		GameManager(int width, int height);
 		~GameManager();
-
-		void changePlayerTurn();
-		void checkVictory();
 		
 		void gameLoop();
 
@@ -38,11 +31,11 @@ class GameManager
 		void setState(std::string newState, bool push);
 		void setState(std::string newState);
 		std::string getState();
+		bool isActiveState(State* state);
 
 	private:
 		std::vector<GameObject*> children;
 		bool run = true;
-		bool is_pressed = false;
 
 		std::string current_state;
 };

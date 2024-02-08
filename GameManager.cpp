@@ -1,7 +1,7 @@
 #include "GameManager.h"
 #include "GameObject.h"
 #include "Case.h"
-#include "Grid.h"
+
 #include "Utils.h"
 #include "json.hpp"
 
@@ -16,15 +16,11 @@ GameManager::GameManager(int width, int height)
 	window.create(sf::VideoMode(width, height), "Tic Tac Toe Online", sf::Style::Close);
     window.setFramerateLimit(60);
     window.setVerticalSyncEnabled(true);
+    window.setKeyRepeatEnabled(false);
 
-    Grid* g = new Grid();
-    addChild(g);
-    grid = g;
+    states["PLAYING"] = new PlayingState();
 
-    PlayingState* statetest;
-    states["PLAYING"] = statetest;
-
-    current_state = "PLAYING";
+    setState("PLAYING");
 }
 
 GameManager::~GameManager()
@@ -116,27 +112,18 @@ void GameManager::addChild(GameObject* obj)
     obj->postInit();
 }
 
-void GameManager::changePlayerTurn()
-{
-    playerTurn = playerTurn == 1 ? 2 : 1;
-}
-
-void GameManager::checkVictory()
-{
-    if (!grid->checkVictory())
-        changePlayerTurn();
-    else
-    {
-        run = false;
-        victory = playerTurn;
-    }
-}
-
 void GameManager::setState(std::string newState, bool push)
 {
     if (!push)
+    {
+        for (int i = 0; i < state_process.size(); i++)
+        {
+            state_process[i]->leave(this);
+        }
         state_process.clear();
+    }
     state_process.push_back(states[newState]);
+    states[newState]->create(this);
 }
 void GameManager::setState(std::string newState)
 {
@@ -149,4 +136,9 @@ std::string GameManager::getState()
         if (pair.second == state_process.back())
             return pair.first;
     }
+}
+
+bool GameManager::isActiveState(State* state)
+{
+    return state == states[getState()];
 }

@@ -12,7 +12,8 @@ class Case : public GameObject
 		int getValue();
 
 		void draw(sf::RenderWindow& window) override;
-		void onMouseClick() override;
+		void handleInput(GameManager* game, sf::Event event) override;
+		/*void onMouseClick() override;*/
 
 	private:
 		int value = 0;

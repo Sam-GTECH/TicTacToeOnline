@@ -35,6 +35,8 @@ void GameObject::onKeyInput(sf::RenderWindow& window) {
 	}
 }
 
+void GameObject::handleInput(GameManager* game, sf::Event event) {}
+
 void GameObject::onMouseClick()
 {
 	for (int i = 0; i < children.size(); i++)

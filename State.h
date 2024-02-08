@@ -1,9 +1,15 @@
 #pragma once
-#include "GameManager.h"
+#include "SFML/Window/Event.hpp"
+
+class GameManager;
 
 class State
 {
 	public:
+		State();
+		virtual void create(GameManager* game);
+		virtual void leave(GameManager* game);
+
 		virtual void handleInput(GameManager* game, sf::Event event);
 
 		virtual bool preUpdate(GameManager* game);

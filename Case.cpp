@@ -13,7 +13,7 @@ Case::Case(float x, float y) : GameObject(x, y, 120, 120)
 void Case::draw(sf::RenderWindow& window)
 {
 	window.draw(rect);
-	if (value == 1)
+	/*if (value == 1)
 	{
 		sf::RectangleShape line(sf::Vector2f(20, 5));
 		line.setPosition(getPos());
@@ -36,10 +36,10 @@ void Case::draw(sf::RenderWindow& window)
 		circle.setFillColor(sf::Color::Transparent);
 		circle.setOutlineThickness(5);
 		window.draw(circle);
-	}
+	}*/
 }
 
-void Case::onMouseClick()
+/*void Case::onMouseClick()
 {
 	if (!is_pressed) {
 		GameObject::onMouseClick();
@@ -53,6 +53,11 @@ void Case::onMouseClick()
 void Case::onMouseRelease()
 {
 	is_pressed = false;
+}*/
+
+void Case::handleInput(GameManager* game, sf::Event event)
+{
+	/*setValue()*/
 }
 
 void Case::setValue(int val)
