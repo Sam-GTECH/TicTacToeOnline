@@ -19,10 +19,7 @@ void Case::draw(sf::RenderWindow& window)
 		pos.x = pos.x + width / 2;
 		pos.y = pos.y + height / 2;
 		sf::RectangleShape line(sf::Vector2f(20, 5));
-		sf::Vector2f pos = getPos();
-		pos.x = pos.x + rect.getSize().x/2;
-		pos.y = pos.y + rect.getSize().y/2;
-		line.setPosition(pos);
+		line.setPosition(getPos());
 		line.setFillColor(sf::Color::Cyan);
 		line.rotate(45);
 		window.draw(line);
@@ -36,10 +33,7 @@ void Case::draw(sf::RenderWindow& window)
 	{
 		sf::Vector2f pos = getPos();
 		sf::CircleShape circle(width - 30);
-		sf::Vector2f pos = getPos();
-		pos.x = pos.x + circle.getRadius()/2;
-		pos.y = pos.y + circle.getRadius()/2;
-		circle.setPosition(pos);
+		circle.setPosition(getPos());
 		circle.setOutlineColor(sf::Color::Red);
 		circle.setFillColor(sf::Color::Transparent);
 		circle.setOutlineThickness(5);
