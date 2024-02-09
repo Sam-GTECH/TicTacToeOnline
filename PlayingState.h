@@ -23,6 +23,7 @@ class PlayingState : public State
 		void checkVictory(GameManager* game);
 
 		int playerTurn = 1;
+
 	private:
 		Grid* grid = new Grid();
 };

@@ -2,6 +2,7 @@
 #include <SFML/System/String.hpp>
 #include <SFML/Graphics.hpp>
 #include "GameObject.h"
+#include "PlayingState.h"
 
 class Case : public GameObject
 {
@@ -12,7 +13,7 @@ class Case : public GameObject
 		int getValue();
 
 		void draw(sf::RenderWindow& window) override;
-		void handleInput(GameManager* game, sf::Event event) override;
+		void handleInput(GameManager* game, sf::Event event, PlayingState* state);
 		/*void onMouseClick() override;*/
 
 	private:

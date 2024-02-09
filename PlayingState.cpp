@@ -35,7 +35,10 @@ void PlayingState::handleInput(GameManager* game, sf::Event event)
         {
             Case* obj = grid->cases[i];
             if (Utils::pointOnObject(sf::Vector2f(event.mouseButton.x, event.mouseButton.y), obj))
-                obj->handleInput(game, event);
+            {
+                obj->handleInput(game, event, this);
+                checkVictory(game);
+            }
         }
     }
 }

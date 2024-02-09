@@ -7,7 +7,7 @@ class State
 {
 	public:
 		State();
-		virtual void create(GameManager* game);
+		virtual void create(GameManager* game, State* old_state);
 		virtual void leave(GameManager* game);
 
 		virtual void handleInput(GameManager* game, sf::Event event);

@@ -3,7 +3,7 @@
 State::State()
 {}
 
-void State::create(GameManager* game) {}
+void State::create(GameManager* game, State* old_state) {}
 
 void State::leave(GameManager* game) {}
 

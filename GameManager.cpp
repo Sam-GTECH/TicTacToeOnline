@@ -109,6 +109,7 @@ void GameManager::addChild(GameObject* obj)
     children.push_back(obj);
     obj->game = this;
     obj->parent = obj;
+    obj->state = states[getState()];
     obj->postInit();
 }
 
@@ -122,16 +123,21 @@ void GameManager::setState(std::string newState, bool push)
         }
         state_process.clear();
     }
+    State* old_state = states[getState()];
     state_process.push_back(states[newState]);
-    states[newState]->create(this);
+    states[newState]->create(this, old_state);
 }
 void GameManager::setState(std::string newState)
 {
+    State* old_state = states[getState()];
     state_process.push_back(states[newState]);
+    states[newState]->create(this, old_state);
 }
 
 std::string GameManager::getState()
 {
+    if (state_process.size() == 0)
+        return "";
     for (const auto& pair : states) {
         if (pair.second == state_process.back())
             return pair.first;

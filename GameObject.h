@@ -22,6 +22,7 @@ public:
 
 	GameManager* game;
 	GameObject* parent;
+	State* state;
 
 private:
 	float x, y;
