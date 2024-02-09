@@ -11,7 +11,7 @@ public:
 
 	virtual void onKeyInput(sf::RenderWindow& window);
 	virtual void onMouseClick();
-	virtual void onMouseRelease();
+	virtual void handleInput(GameManager* game, sf::Event event);
 	virtual void update();
 	virtual void draw(sf::RenderWindow& window);
 
@@ -22,6 +22,7 @@ public:
 
 	GameManager* game;
 	GameObject* parent;
+	State* state;
 
 private:
 	float x, y;
