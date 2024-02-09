@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/System/String.hpp>
 #include <SFML/Graphics.hpp>
+#include "SFML/System.hpp"
 #include "GameObject.h"
 #include "PlayingState.h"
 
@@ -20,8 +21,9 @@ class Case : public GameObject
 		int value = 0;
 		sf::RectangleShape rect;
 
-		sf::CircleShape player1;
-		sf::RectangleShape player2;
+		sf::RectangleShape line1;
+		sf::RectangleShape line2;
+		sf::CircleShape circle;
 
 		int width = 60;
 		int height = 60;
