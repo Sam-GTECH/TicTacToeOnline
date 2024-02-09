@@ -1,5 +1,6 @@
 #include "Grid.h"
 #include "Case.h"
+#include "PlayingState.h"
 
 Grid::Grid() : GameObject()
 {
@@ -19,10 +20,10 @@ void Grid::addChild(GameObject* obj)
     cases.push_back(dynamic_cast<Case*>(obj));
 }
 
-bool Grid::checkVictory()
+bool Grid::checkVictory(PlayingState* state)
 {
     int count = 0;
-    int player = game->playerTurn; // 0, 1, 2 | 3, 4, 5 | 6, 7, 8
+    int player = state->playerTurn; // 0, 1, 2 | 3, 4, 5 | 6, 7, 8
     
     // horizontal check
     for (int i = 0; i < 8; i = i+3)

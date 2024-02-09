@@ -15,37 +15,56 @@ void Case::draw(sf::RenderWindow& window)
 	window.draw(rect);
 	if (value == 1)
 	{
+		sf::Vector2f pos = getPos();
+		pos.x = pos.x + width / 2;
+		pos.y = pos.y + height / 2;
 		sf::RectangleShape line(sf::Vector2f(20, 5));
 		line.setPosition(getPos());
 		line.setFillColor(sf::Color::Cyan);
 		line.rotate(45);
 		window.draw(line);
 		sf::RectangleShape line2(sf::Vector2f(20, 5));
-		line2.setPosition(getPos());
+		line2.setPosition(pos);
 		line2.setFillColor(sf::Color::Cyan);
 		line2.rotate(-45);
 		window.draw(line2);
 	}
 	else if (value == 2)
 	{
+		sf::Vector2f pos = getPos();
 		sf::CircleShape circle(width - 30);
 		circle.setPosition(getPos());
 		circle.setOutlineColor(sf::Color::Red);
 		circle.setFillColor(sf::Color::Transparent);
-		circle.setOutlineThickness(10);
+		circle.setOutlineThickness(5);
 		window.draw(circle);
 	}
 }
 
-void Case::onMouseClick()
+/*void Case::onMouseClick()
 {
-	GameObject::onMouseClick();
-	setValue(game->playerTurn);
-	game->checkVictory();
+	if (!is_pressed) {
+		GameObject::onMouseClick();
+		setValue(game->playerTurn);
+		game->checkVictory();
+	}
+	is_pressed = true;
+	game->case_is_pressed = true;
+}
+
+void Case::onMouseRelease()
+{
+	is_pressed = false;
+}*/
+
+void Case::handleInput(GameManager* game, sf::Event event, PlayingState* state)
+{
+	setValue(state->playerTurn);
 }
 
 void Case::setValue(int val)
 {
+	//if (value > 0) return;
 	value = val;
 }
 

@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Fichiers sources\States">
+      <UniqueIdentifier>{e9d6ec5c-e814-43b4-b39a-add7292f108c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\States">
+      <UniqueIdentifier>{5dbbc124-abc6-4c58-b464-8a52fc663109}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -39,6 +45,24 @@
     <ClCompile Include="Utils.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="OnlineManager.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="State.cpp">
+      <Filter>Fichiers sources\States</Filter>
+    </ClCompile>
+    <ClCompile Include="State.h">
+      <Filter>Fichiers d%27en-tête\States</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayingState.h">
+      <Filter>Fichiers d%27en-tête\States</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayingState.cpp">
+      <Filter>Fichiers sources\States</Filter>
+    </ClCompile>
+    <ClCompile Include="VictoryState.cpp">
+      <Filter>Fichiers sources\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameManager.h">
@@ -49,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="Utils.h">
       <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="VictoryState.h">
+      <Filter>Fichiers d%27en-tête\States</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

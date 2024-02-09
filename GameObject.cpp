@@ -20,28 +20,23 @@ void GameObject::postInit() {
 	}
 }
 
-void GameObject::onKeyInput(sf::RenderWindow& window) {
-	for (int i = 0; i < children.size(); i++)
-	{
-		children[i]->onKeyInput(window);
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-			sf::Vector2i m_pos = sf::Mouse::getPosition(window);
-			if (Utils::pointOnObject(sf::Vector2f(m_pos.x, m_pos.y), children[i]))
-			{
-				children[i]->onMouseClick();
-			}
-		}
-	}
-}
+void GameObject::handleInput(GameManager* game, sf::Event event) {}
 
-void GameObject::onMouseClick()
+/*void GameObject::onMouseClick()
 {
 	for (int i = 0; i < children.size(); i++)
 	{
 		children[i]->onMouseClick();
 	}
 }
+
+void GameObject::onMouseRelease()
+{
+	for (int i = 0; i < children.size(); i++)
+	{
+		children[i]->onMouseRelease();
+	}
+}*/
 
 void GameObject::update()
 {
