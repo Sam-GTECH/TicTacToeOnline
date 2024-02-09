@@ -12,6 +12,8 @@ class GameManager
 		std::map<std::string, State*> states;
 		std::vector<State*> state_process;
 
+		sf::Font font;
+
 		sf::RenderWindow window;
 		int victory = 0;
 

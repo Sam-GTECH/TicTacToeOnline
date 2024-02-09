@@ -6,6 +6,7 @@
 #include "json.hpp"
 
 #include "PlayingState.h"
+#include "VictoryState.h"
 
 #include <iostream>
 
@@ -18,7 +19,10 @@ GameManager::GameManager(int width, int height)
     window.setVerticalSyncEnabled(true);
     window.setKeyRepeatEnabled(false);
 
+    font.loadFromFile("arialbd.ttf");
+
     states["PLAYING"] = new PlayingState();
+    states["VICTORY"] = new VictoryState();
 
     setState("PLAYING");
 }
