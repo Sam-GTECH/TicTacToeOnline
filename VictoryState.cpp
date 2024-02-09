@@ -1,5 +1,6 @@
 #include "VictoryState.h"
 #include "GameManager.h"
+#include <iostream>
 
 VictoryState::VictoryState() {}
 
@@ -18,4 +19,13 @@ void VictoryState::postDraw(GameManager* game)
 {
 	game->window.draw(rect);
 	game->window.draw(text);
+}
+
+void VictoryState::handleInput(GameManager* game, sf::Event event)
+{
+	std::cout << event.key.code << std::endl;
+	if (event.KeyPressed && event.key.code == sf::Keyboard::Return)
+	{
+		game->setState("PLAYING", false);
+	}
 }

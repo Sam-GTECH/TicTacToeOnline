@@ -11,6 +11,8 @@ class VictoryState : public State
 
 		void postDraw(GameManager* game) override;
 
+		void handleInput(GameManager* game, sf::Event event) override;
+
 	private:
 		sf::RectangleShape rect;
 
