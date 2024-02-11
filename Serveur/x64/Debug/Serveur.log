@@ -1,11 +1,1 @@
-﻿  Serveur.cpp
-C:\Users\lguglielmini\source\repos\Sam-GTECH\Serveur\Serveur.cpp(286,24): warning C4477: 'printf' : la chaîne de format '%d' nécessite un argument de type 'int', mais l'argument variadique 1 est de type 'SOCKET'
-C:\Users\lguglielmini\source\repos\Sam-GTECH\Serveur\Serveur.cpp(286,24): message : utilisez '%lld' dans la chaîne de format
-C:\Users\lguglielmini\source\repos\Sam-GTECH\Serveur\Serveur.cpp(286,24): message : utilisez '%Id' dans la chaîne de format
-C:\Users\lguglielmini\source\repos\Sam-GTECH\Serveur\Serveur.cpp(286,24): message : utilisez '%I64d' dans la chaîne de format
-C:\Users\lguglielmini\source\repos\Sam-GTECH\Serveur\Serveur.cpp(431,24): warning C4477: 'printf' : la chaîne de format '%d' nécessite un argument de type 'int', mais l'argument variadique 1 est de type 'WPARAM'
-C:\Users\lguglielmini\source\repos\Sam-GTECH\Serveur\Serveur.cpp(431,24): message : utilisez '%lld' dans la chaîne de format
-C:\Users\lguglielmini\source\repos\Sam-GTECH\Serveur\Serveur.cpp(431,24): message : utilisez '%Id' dans la chaîne de format
-C:\Users\lguglielmini\source\repos\Sam-GTECH\Serveur\Serveur.cpp(431,24): message : utilisez '%I64d' dans la chaîne de format
-C:\Users\lguglielmini\source\repos\Sam-GTECH\Serveur\Serveur.cpp(223): warning C4715: 'WinMain' : les chemins de contrôle ne retournent pas tous une valeur
-  Serveur.vcxproj -> C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\x64\Debug\Serveur.exe
+﻿  Serveur.vcxproj -> C:\Users\ludov\source\repos\TicTacToeOnline\TicTacToeOnline\x64\Debug\Serveur.exe

@@ -7,7 +7,8 @@
 
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "27015"
-#define IP_ADDRESS "10.1.144.12"
+//#define IP_ADDRESS "10.1.144.12"
+#define IP_ADDRESS "192.168.1.18"
 
 int main(int argc, char** argv)
 {
