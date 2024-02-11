@@ -1,3 +1,1 @@
-﻿  ServeurWeb.cpp
-C:\Users\ludov\source\repos\TicTacToeOnline\ServeurWeb\ServeurWeb.cpp(22,9): warning C4101: 'iSendResult' : variable locale non référencée
-  ServeurWeb.vcxproj -> C:\Users\ludov\source\repos\TicTacToeOnline\TicTacToeOnline\x64\Debug\ServeurWeb.exe
+﻿
