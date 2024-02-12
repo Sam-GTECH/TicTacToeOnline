@@ -1,8 +1,13 @@
 #include "GameManager.h"
+#include "OnlineManager.h"
 #include "GameObject.h"
 #include "Case.h"
-#include "Grid.h"
+
 #include "Utils.h"
+#include "json.hpp"
+
+#include "PlayingState.h"
+#include "VictoryState.h"
 
 #include <iostream>
 
@@ -11,10 +16,16 @@ GameManager::GameManager(int width, int height)
 	window.create(sf::VideoMode(width, height), "Tic Tac Toe Online", sf::Style::Close);
     window.setFramerateLimit(60);
     window.setVerticalSyncEnabled(true);
+    window.setKeyRepeatEnabled(false);
 
-    Grid* g = new Grid();
-    addChild(g);
-    grid = g;
+    font.loadFromFile("arialbd.ttf");
+
+    states["PLAYING"] = new PlayingState();
+    states["VICTORY"] = new VictoryState();
+
+    //onManage->
+
+    setState("PLAYING");
 }
 
 GameManager::~GameManager()
@@ -30,25 +41,31 @@ void GameManager::gameLoop()
 {
 	while (run && window.isOpen())
 	{
-        onKeyInput();
+
+        handleInput();
 
         update();
 
         draw();
 	}
-    while (victory > 0)
+    /*while (victory > 0)
     {
         sf::Event event;
         while (window.pollEvent(event))
         {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
                 victory = 0;
+            if (event.type == sf::Event::Closed)
+            {
+                victory = 0;
+                break;
+            }
         }
-    }
+    }*/
     return;
 }
 
-void GameManager::onKeyInput()
+void GameManager::handleInput()
 {
     sf::Event event;
     while (window.pollEvent(event))
@@ -60,36 +77,40 @@ void GameManager::onKeyInput()
             break;
         }
 
-        for (int i = 0; i < children.size(); i++)
-        {
-            children[i]->onKeyInput(window);
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-            {
-                sf::Vector2i m_pos = sf::Mouse::getPosition(window);
-                if (Utils::pointOnObject(sf::Vector2f(m_pos.x, m_pos.y), children[i]))
-                {
-                    children[i]->onMouseClick();
-                }
-            }
-        }
+        states[getState()]->handleInput(this, event);
     }
 }
 
 void GameManager::update()
 {
+    if (states[getState()]->preUpdate(this))
+        return;
+
     for (int i = 0; i < children.size(); i++)
     {
         children[i]->update();
     }
+
+    states[getState()]->postUpdate(this);
 }
 
 void GameManager::draw()
 {
     window.clear(sf::Color(0, 0, 0));
+
+    if (states[getState()]->preDraw(this))
+        return;
+
     for (int i = 0; i < children.size(); i++)
     {
         children[i]->draw(window);
     }
+
+    for (int i = 0; i < state_process.size(); i++)
+    {
+        state_process[i]->postDraw(this);
+    }
+
     window.display();
 }
 
@@ -98,21 +119,42 @@ void GameManager::addChild(GameObject* obj)
     children.push_back(obj);
     obj->game = this;
     obj->parent = obj;
+    obj->state = states[getState()];
     obj->postInit();
 }
 
-void GameManager::changePlayerTurn()
+void GameManager::setState(std::string newState, bool push)
 {
-    playerTurn = playerTurn == 1 ? 2 : 1;
+    if (!push)
+    {
+        for (int i = 0; i < state_process.size(); i++)
+        {
+            state_process[i]->leave(this);
+        }
+        state_process.clear();
+    }
+    State* old_state = states[getState()];
+    state_process.push_back(states[newState]);
+    states[newState]->create(this, old_state);
+}
+void GameManager::setState(std::string newState)
+{
+    State* old_state = states[getState()];
+    state_process.push_back(states[newState]);
+    states[newState]->create(this, old_state);
 }
 
-void GameManager::checkVictory()
+std::string GameManager::getState()
 {
-    if (!grid->checkVictory())
-        changePlayerTurn();
-    else
-    {
-        run = false;
-        victory = playerTurn;
+    if (state_process.size() == 0)
+        return "";
+    for (const auto& pair : states) {
+        if (pair.second == state_process.back())
+            return pair.first;
     }
+}
+
+bool GameManager::isActiveState(State* state)
+{
+    return state == states[getState()];
 }

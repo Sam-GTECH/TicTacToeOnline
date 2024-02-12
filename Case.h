@@ -1,7 +1,9 @@
 #pragma once
 #include <SFML/System/String.hpp>
 #include <SFML/Graphics.hpp>
+#include "SFML/System.hpp"
 #include "GameObject.h"
+#include "PlayingState.h"
 
 class Case : public GameObject
 {
@@ -12,15 +14,19 @@ class Case : public GameObject
 		int getValue();
 
 		void draw(sf::RenderWindow& window) override;
-		void onMouseClick() override;
+		void handleInput(GameManager* game, sf::Event event, PlayingState* state);
+		/*void onMouseClick() override;*/
 
 	private:
 		int value = 0;
 		sf::RectangleShape rect;
 
-		sf::CircleShape player1;
-		sf::RectangleShape player2;
+		sf::RectangleShape line1;
+		sf::RectangleShape line2;
+		sf::CircleShape circle;
 
 		int width = 60;
 		int height = 60;
+
+		bool is_pressed = false;
 };

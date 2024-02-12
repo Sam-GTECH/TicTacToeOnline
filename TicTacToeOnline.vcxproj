@@ -140,12 +140,20 @@
     <ClCompile Include="GameObject.h" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="OnlineManager.cpp" />
+    <ClCompile Include="PlayingState.cpp" />
+    <ClCompile Include="PlayingState.h" />
+    <ClCompile Include="State.cpp" />
+    <ClCompile Include="State.h" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="VictoryState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Grid.h" />
+    <ClInclude Include="OnlineManager.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="VictoryState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
