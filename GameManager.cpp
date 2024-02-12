@@ -35,6 +35,8 @@ bool GameManager::Init(int width, int height)
     states["VICTORY"] = new VictoryState();
 
     onlineManage = new OnlineManager();
+    Connect();
+    onlineManage->createWindow();
 
     setState("PLAYING");
     return true;
@@ -51,7 +53,7 @@ void GameManager::Uninit()
 
 bool GameManager::Connect()
 {
-    onlineManage->Connect();
+    onlineManage->connect();
     return true;
 }
 

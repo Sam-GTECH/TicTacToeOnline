@@ -41,4 +41,5 @@ class OnlineManager
 		void writeJSON(std::string filename, std::string data);
 		void sendMessage(const char* message);
 		bool connect();
+		sf::RenderWindow createWindow();
 };

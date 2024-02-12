@@ -42,6 +42,8 @@ void OnlineManager::sendMessage(const char* message) {
     printf("Message Sent: %s\n", message);
 }
 
+
+
 // typedef definition
 
 typedef struct _SOCKET_INFORMATION {
@@ -210,7 +212,10 @@ bool OnlineManager::connect()
         return true;
 }
 
-//Create  window
+
+sf::RenderWindow OnlineManager::createWindow()
+{
+    //Create  window
 
     LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
@@ -547,5 +552,9 @@ bool OnlineManager::connect()
 
             printf("CreateWindow() is OK!\n");
             //ShowWindow(Window, SW_SHOW);
-            return Window;
+            
         }
+        return Window;
+}
+
+
