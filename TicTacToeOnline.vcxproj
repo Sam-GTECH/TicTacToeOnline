@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Grid.h" />
+    <ClInclude Include="OnlineManager.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="VictoryState.h" />
   </ItemGroup>

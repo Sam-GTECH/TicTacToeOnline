@@ -4,6 +4,7 @@
 #include "State.h"
 
 class GameObject;
+class OnlineManager;
 
 class GameManager
 {
@@ -11,6 +12,8 @@ class GameManager
 
 		std::map<std::string, State*> states;
 		std::vector<State*> state_process;
+
+		OnlineManager* onManage;
 
 		sf::Font font;
 

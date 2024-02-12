@@ -1,4 +1,5 @@
 #include "GameManager.h"
+#include "OnlineManager.h"
 #include "GameObject.h"
 #include "Case.h"
 
@@ -9,8 +10,6 @@
 #include "VictoryState.h"
 
 #include <iostream>
-
-using json = nlohmann::json;
 
 GameManager::GameManager(int width, int height)
 {
@@ -23,6 +22,8 @@ GameManager::GameManager(int width, int height)
 
     states["PLAYING"] = new PlayingState();
     states["VICTORY"] = new VictoryState();
+
+    //onManage->
 
     setState("PLAYING");
 }
