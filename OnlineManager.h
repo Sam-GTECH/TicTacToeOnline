@@ -40,4 +40,5 @@ class OnlineManager
 		void writeJSON(std::string filename, json data);
 		void writeJSON(std::string filename, std::string data);
 		void sendMessage(const char* message);
+		bool connect();
 };
