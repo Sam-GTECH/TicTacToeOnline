@@ -11,9 +11,20 @@
 
 #include <iostream>
 
-GameManager::GameManager(int width, int height)
+
+GameManager::GameManager()
 {
-	window.create(sf::VideoMode(width, height), "Tic Tac Toe Online", sf::Style::Close);
+    onlineManage = nullptr;
+}
+
+GameManager::~GameManager()
+{
+    assert(children.size()==0);
+}
+
+bool GameManager::Init(int width, int height)
+{
+    window.create(sf::VideoMode(width, height), "Tic Tac Toe Online", sf::Style::Close);
     window.setFramerateLimit(60);
     window.setVerticalSyncEnabled(true);
     window.setKeyRepeatEnabled(false);
@@ -23,18 +34,25 @@ GameManager::GameManager(int width, int height)
     states["PLAYING"] = new PlayingState();
     states["VICTORY"] = new VictoryState();
 
-    //onManage->
+    onlineManage = new OnlineManager();
 
     setState("PLAYING");
+    return true;
 }
 
-GameManager::~GameManager()
+void GameManager::Uninit()
 {
-    window.~RenderWindow();
     for (int i = 0; i < children.size(); i++)
     {
         delete children[i];
     }
+    children.clear();
+}
+
+bool GameManager::Connect()
+{
+    onlineManage->Connect();
+    return true;
 }
 
 void GameManager::gameLoop()
@@ -48,25 +66,13 @@ void GameManager::gameLoop()
 
         draw();
 	}
-    /*while (victory > 0)
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
-                victory = 0;
-            if (event.type == sf::Event::Closed)
-            {
-                victory = 0;
-                break;
-            }
-        }
-    }*/
+    
     return;
 }
 
 void GameManager::handleInput()
 {
+
     sf::Event event;
     while (window.pollEvent(event))
     {
@@ -77,6 +83,10 @@ void GameManager::handleInput()
             break;
         }
 
+        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+        {    
+            onlineManage->sendMessage("test");
+        }
         states[getState()]->handleInput(this, event);
     }
 }
@@ -158,3 +168,5 @@ bool GameManager::isActiveState(State* state)
 {
     return state == states[getState()];
 }
+
+

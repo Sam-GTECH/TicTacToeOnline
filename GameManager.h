@@ -9,22 +9,13 @@ class OnlineManager;
 class GameManager
 {
 	public:
-
-		std::map<std::string, State*> states;
-		std::vector<State*> state_process;
-
-		OnlineManager* onManage;
-
-		sf::Font font;
-
-		sf::RenderWindow window;
-		int victory = 0;
-
-		bool case_is_pressed = false;
-
-		GameManager(int width, int height);
+		GameManager();
 		~GameManager();
-		
+
+		bool Init(int width, int height);
+		void Uninit();
+		bool Connect();
+
 		void gameLoop();
 
 		void handleInput();
@@ -37,6 +28,19 @@ class GameManager
 		void setState(std::string newState);
 		std::string getState();
 		bool isActiveState(State* state);
+
+public:
+		std::map<std::string, State*> states;
+		std::vector<State*> state_process;
+
+		OnlineManager* onlineManage;
+
+		sf::Font font;
+
+		sf::RenderWindow window;
+		int victory = 0;
+
+		bool case_is_pressed = false;
 
 	private:
 		std::vector<GameObject*> children;

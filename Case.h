@@ -12,7 +12,7 @@ class Case : public GameObject
 
 		void setValue(int val);
 		int getValue();
-
+		
 		void draw(sf::RenderWindow& window) override;
 		void handleInput(GameManager* game, sf::Event event, PlayingState* state);
 		/*void onMouseClick() override;*/
