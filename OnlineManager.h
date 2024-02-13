@@ -31,6 +31,7 @@ class OnlineManager
 		struct addrinfo* result = NULL,
 			* ptr = NULL,
 			hints;
+		
 
 		std::map<int, int> c_message;
 
@@ -40,6 +41,6 @@ class OnlineManager
 		void writeJSON(std::string filename, json data);
 		void writeJSON(std::string filename, std::string data);
 		void sendMessage(const char* message);
-		bool connect();
-		sf::RenderWindow createWindow();
+		bool ConnectServeur();
+		HWND createWindowServeur();
 };

@@ -36,7 +36,7 @@ bool GameManager::Init(int width, int height)
 
     onlineManage = new OnlineManager();
     Connect();
-    onlineManage->createWindow();
+    onlineManage->createWindowServeur();
 
     setState("PLAYING");
     return true;
@@ -53,7 +53,7 @@ void GameManager::Uninit()
 
 bool GameManager::Connect()
 {
-    onlineManage->connect();
+    onlineManage->ConnectServeur();
     return true;
 }
 

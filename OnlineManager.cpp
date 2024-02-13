@@ -1,11 +1,45 @@
+#define WM_SOCKET (WM_USER + 1)
+
 #include "OnlineManager.h"
 
+typedef struct _SOCKET_INFORMATION {
 
+    BOOL RecvPosted;
+
+    CHAR Buffer[DATA_BUFSIZE];
+
+    WSABUF DataBuf;
+
+    SOCKET Socket;
+
+    DWORD BytesSEND;
+
+    DWORD BytesRECV;
+
+    struct _SOCKET_INFORMATION* Next;
+
+} SOCKET_INFORMATION, * LPSOCKET_INFORMATION;
+
+// Prototypes
+
+void CreateSocketInformation(SOCKET s);
+
+LPSOCKET_INFORMATION GetSocketInformation(SOCKET s);
+
+void FreeSocketInformation(SOCKET s);
+
+HWND MakeWorkerWindow(void);
+
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+
+
+// Global var
+
+LPSOCKET_INFORMATION SocketInfoList;
 
 OnlineManager::OnlineManager()
 {}
-
-
 
 //JSON Manager
 json OnlineManager::getData(std::string data)
@@ -42,53 +76,156 @@ void OnlineManager::sendMessage(const char* message) {
     printf("Message Sent: %s\n", message);
 }
 
+HWND OnlineManager::createWindowServeur() {
+    //Create window
+    LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+        SOCKET Accept;
+        LPSOCKET_INFORMATION SocketInfo;
+        DWORD RecvBytes;
+        DWORD SendBytes;
+        DWORD Flags;
+
+        if (uMsg == WM_SOCKET) {
+            if (WSAGETSELECTERROR(lParam)) {
+                printf("Socket failed with error %d\n", WSAGETSELECTERROR(lParam));
+                FreeSocketInformation(wParam);
+            }
+            else {
+                printf("Socket looks fine!\n");
+                switch (WSAGETSELECTEVENT(lParam)) {
+
+                    case FD_READ:
+                        SocketInfo = GetSocketInformation(wParam);
+                        // Read data only if the receive buffer is empty
+                        if (SocketInfo->BytesRECV != 0) {
+                            SocketInfo->RecvPosted = TRUE;
+                            return 0;
+                        }
+                        else {
+                            SocketInfo->DataBuf.buf = SocketInfo->Buffer;
+                            SocketInfo->DataBuf.len = DATA_BUFSIZE;
+                            Flags = 0;
+                            if (WSARecv(SocketInfo->Socket, &(SocketInfo->DataBuf), 1, &RecvBytes, &Flags, NULL, NULL) == SOCKET_ERROR) {
+                                if (WSAGetLastError() != WSAEWOULDBLOCK) {
+                                    printf("WSARecv() failed with error %d\n", WSAGetLastError());
+                                    FreeSocketInformation(wParam);
+                                    return 0;
+                                }
+                            }
+                            else { // No error so update the byte count
+                                SocketInfo->DataBuf.buf[RecvBytes] = 0;
+                                printf(SocketInfo->DataBuf.buf);
+                                OutputDebugStringA("\n");
+                            }
+                        }
+                        break;
+                    case FD_CLOSE:
+                        printf("Closing socket %d\n", wParam);
+                        FreeSocketInformation(wParam);
+                        break;
+                }
+            }
+            return 0;
+        }
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    }
+
+    void CreateSocketInformation(SOCKET s) {
+        LPSOCKET_INFORMATION SI;
+        if ((SI = (LPSOCKET_INFORMATION)GlobalAlloc(GPTR, sizeof(SOCKET_INFORMATION))) == NULL) {
+            printf("GlobalAlloc() failed with error %d\n", GetLastError());
+            return;
+        }
+        else
+            printf("GlobalAlloc() for SOCKET_INFORMATION is OK!\n");
+        // Prepare SocketInfo structure for use
+        SI->Socket = s;
+        SI->RecvPosted = FALSE;
+        SI->BytesSEND = 0;
+        SI->BytesRECV = 0;
+        SI->Next = SocketInfoList;
+        SocketInfoList = SI;
+    }
+
+    LPSOCKET_INFORMATION GetSocketInformation(SOCKET s) {
+        SOCKET_INFORMATION* SI = SocketInfoList;
+        while (SI) {
+            if (SI->Socket == s)
+                return SI;
+            SI = SI->Next;
+        }
+        return NULL;
+    }
+
+    void FreeSocketInformation(SOCKET s) {
+        SOCKET_INFORMATION* SI = SocketInfoList;
+        SOCKET_INFORMATION* PrevSI = NULL;
+        while (SI) {
+            if (SI->Socket == s) {
+                if (PrevSI)
+                    PrevSI->Next = SI->Next;
+                else
+                    SocketInfoList = SI->Next;
+                closesocket(SI->Socket);
+                GlobalFree(SI);
+                return;
+            }
+            PrevSI = SI;
+            SI = SI->Next;
+        }
+    }
+
+    HWND MakeWorkerWindow(void) {
+        WNDCLASS wndclass;
+        const char* ProviderClass = "AsyncSelect";
+        HWND Window;
+        wndclass.style = CS_HREDRAW | CS_VREDRAW;
+        wndclass.lpfnWndProc = (WNDPROC)WindowProc;
+        wndclass.cbClsExtra = 0;
+        wndclass.cbWndExtra = 0;
+        wndclass.hInstance = NULL;
+        wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+        wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
+        wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+        wndclass.lpszMenuName = NULL;
+        wndclass.lpszClassName = (LPCWSTR)ProviderClass;
+        if (RegisterClass(&wndclass) == 0) {
+            printf("RegisterClass() failed with error %d\n", GetLastError());
+            return NULL;
+        }
+        else {
+            printf("RegisterClass() is OK!\n");
+        }
+        // Create a window
+        if ((Window = CreateWindow(
+            (LPCWSTR)ProviderClass,
+            L"",
+            WS_OVERLAPPEDWINDOW,
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            NULL,
+            NULL,
+            NULL,
+            NULL)) == NULL) {
+            printf("CreateWindow() failed with error %d\n", GetLastError());
+            return NULL;
+        }
+        else {
+            printf("CreateWindow() is OK!\n");
+            //ShowWindow(Window, SW_SHOW);
+        }
+        return Window;
+    }
+}
 
 
-// typedef definition
-
-typedef struct _SOCKET_INFORMATION {
-
-    BOOL RecvPosted;
-
-    CHAR Buffer[DATA_BUFSIZE];
-
-    WSABUF DataBuf;
-
-    SOCKET Socket;
-
-    DWORD BytesSEND;
-
-    DWORD BytesRECV;
-
-    struct _SOCKET_INFORMATION* Next;
-
-} SOCKET_INFORMATION, * LPSOCKET_INFORMATION;
 
 
 
-#define WM_SOCKET (WM_USER + 1)
 
-
-
-// Prototypes
-
-void CreateSocketInformation(SOCKET s);
-
-LPSOCKET_INFORMATION GetSocketInformation(SOCKET s);
-
-void FreeSocketInformation(SOCKET s);
-
-HWND MakeWorkerWindow(void);
-
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-
-
-// Global var
-
-LPSOCKET_INFORMATION SocketInfoList;
-
-bool OnlineManager::connect()
+bool OnlineManager::ConnectServeur()
 {
     WSADATA wsaData;
     SOCKET ConnectSocket = INVALID_SOCKET;
@@ -210,351 +347,7 @@ bool OnlineManager::connect()
         }
 
         return true;
-}
-
-
-sf::RenderWindow OnlineManager::createWindow()
-{
-    //Create  window
-
-    LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-
-    {
-
-        SOCKET Accept;
-
-        LPSOCKET_INFORMATION SocketInfo;
-
-        DWORD RecvBytes;
-
-        DWORD SendBytes;
-
-        DWORD Flags;
-
-
-
-        if (uMsg == WM_SOCKET)
-
-        {
-
-            if (WSAGETSELECTERROR(lParam))
-
-            {
-
-                printf("Socket failed with error %d\n", WSAGETSELECTERROR(lParam));
-
-                FreeSocketInformation(wParam);
-
-            }
-
-            else
-
-            {
-
-                printf("Socket looks fine!\n");
-
-                switch (WSAGETSELECTEVENT(lParam))
-
-                {
-
-                case FD_READ:
-
-                    SocketInfo = GetSocketInformation(wParam);
-
-                    // Read data only if the receive buffer is empty
-
-                    if (SocketInfo->BytesRECV != 0)
-
-                    {
-                        SocketInfo->RecvPosted = TRUE;
-
-
-                        return 0;
-
-                    }
-
-                    else
-
-                    {
-
-                        SocketInfo->DataBuf.buf = SocketInfo->Buffer;
-
-                        SocketInfo->DataBuf.len = DATA_BUFSIZE;
-
-
-
-
-                        Flags = 0;
-
-                        if (WSARecv(SocketInfo->Socket, &(SocketInfo->DataBuf), 1, &RecvBytes,
-
-                            &Flags, NULL, NULL) == SOCKET_ERROR)
-
-                        {
-
-                            if (WSAGetLastError() != WSAEWOULDBLOCK)
-
-                            {
-
-                                printf("WSARecv() failed with error %d\n", WSAGetLastError());
-
-                                FreeSocketInformation(wParam);
-
-                                return 0;
-
-                            }
-
-                        }
-
-                        else // No error so update the byte count
-
-                        {
-                            SocketInfo->DataBuf.buf[RecvBytes] = 0;
-                            //printf("WSARecv() is OK!\n");
-                            //OutputDebugStringA(SocketInfo->DataBuf.buf);
-                            printf(SocketInfo->DataBuf.buf);
-
-
-                            OutputDebugStringA("\n");
-
-                            //SocketInfo->BytesRECV = RecvBytes;
-
-
-                        }
-
-                    }
-
-                case FD_CLOSE:
-
-                    printf("Closing socket %d\n", wParam);
-
-                    FreeSocketInformation(wParam);
-
-                    break;
-
-                }
-
-            }
-
-
-            return 0;
-
-        }
-
-        return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
 
-    void CreateSocketInformation(SOCKET s)
-
-    {
-
-        LPSOCKET_INFORMATION SI;
-
-
-
-        if ((SI = (LPSOCKET_INFORMATION)GlobalAlloc(GPTR, sizeof(SOCKET_INFORMATION))) == NULL)
-
-        {
-
-            printf("GlobalAlloc() failed with error %d\n", GetLastError());
-
-            return;
-
-        }
-
-        else
-
-            printf("GlobalAlloc() for SOCKET_INFORMATION is OK!\n");
-
-
-
-        // Prepare SocketInfo structure for use
-
-        SI->Socket = s;
-
-        SI->RecvPosted = FALSE;
-
-        SI->BytesSEND = 0;
-
-        SI->BytesRECV = 0;
-
-        SI->Next = SocketInfoList;
-
-        SocketInfoList = SI;
-
-    }
-
-
-
-    LPSOCKET_INFORMATION GetSocketInformation(SOCKET s)
-
-    {
-
-        SOCKET_INFORMATION* SI = SocketInfoList;
-
-
-
-        while (SI)
-
-        {
-
-            if (SI->Socket == s)
-
-                return SI;
-
-
-
-            SI = SI->Next;
-
-        }
-
-
-
-        return NULL;
-
-    }
-
-
-
-    void FreeSocketInformation(SOCKET s)
-
-    {
-
-        SOCKET_INFORMATION* SI = SocketInfoList;
-
-        SOCKET_INFORMATION* PrevSI = NULL;
-
-
-
-        while (SI)
-
-        {
-
-            if (SI->Socket == s)
-
-            {
-
-                if (PrevSI)
-
-                    PrevSI->Next = SI->Next;
-
-                else
-
-                    SocketInfoList = SI->Next;
-
-
-
-                closesocket(SI->Socket);
-
-                GlobalFree(SI);
-
-                return;
-
-            }
-
-
-
-            PrevSI = SI;
-
-            SI = SI->Next;
-
-        }
-
-    }
-
-
-
-    HWND MakeWorkerWindow(void)
-
-    {
-
-        WNDCLASS wndclass;
-
-        const char* ProviderClass = "AsyncSelect";
-
-        HWND Window;
-
-
-
-        wndclass.style = CS_HREDRAW | CS_VREDRAW;
-
-        wndclass.lpfnWndProc = (WNDPROC)WindowProc;
-
-        wndclass.cbClsExtra = 0;
-
-        wndclass.cbWndExtra = 0;
-
-        wndclass.hInstance = NULL;
-
-        wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-
-        wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
-
-        wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-
-        wndclass.lpszMenuName = NULL;
-
-        wndclass.lpszClassName = (LPCWSTR)ProviderClass;
-
-
-
-        if (RegisterClass(&wndclass) == 0)
-
-        {
-
-            printf("RegisterClass() failed with error %d\n", GetLastError());
-
-            return NULL;
-
-        }
-
-        else
-
-            printf("RegisterClass() is OK!\n");
-
-
-
-        // Create a window
-
-        if ((Window = CreateWindow(
-
-            (LPCWSTR)ProviderClass,
-
-            L"",
-
-            WS_OVERLAPPEDWINDOW,
-
-            CW_USEDEFAULT,
-
-            CW_USEDEFAULT,
-
-            CW_USEDEFAULT,
-
-            CW_USEDEFAULT,
-
-            NULL,
-
-            NULL,
-
-            NULL,
-
-            NULL)) == NULL)
-
-        {
-
-            printf("CreateWindow() failed with error %d\n", GetLastError());
-
-            return NULL;
-
-        }
-
-        else {
-
-            printf("CreateWindow() is OK!\n");
-            //ShowWindow(Window, SW_SHOW);
-            
-        }
-        return Window;
-}
 
 
