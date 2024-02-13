@@ -35,11 +35,15 @@ bool GameManager::Init(int width, int height)
     states["VICTORY"] = new VictoryState();
 
     onlineManage = new OnlineManager();
-    Connect();
-    onlineManage->createWindowServeur();
-
-    setState("PLAYING");
-    return true;
+    //onlineManage->createWindowServeur();
+    if (Connect() == true) {
+        setState("PLAYING");
+        return true;
+    }
+    else {
+        return false;
+    }
+    
 }
 
 void GameManager::Uninit()
@@ -53,8 +57,12 @@ void GameManager::Uninit()
 
 bool GameManager::Connect()
 {
-    onlineManage->ConnectServeur();
-    return true;
+    if (onlineManage->ConnectServeur() == true) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 void GameManager::gameLoop()
@@ -87,7 +95,7 @@ void GameManager::handleInput()
 
         if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
         {    
-            onlineManage->sendMessage("test");
+            //onlineManage->sendMessage("test");
         }
         states[getState()]->handleInput(this, event);
     }
@@ -95,7 +103,9 @@ void GameManager::handleInput()
 
 void GameManager::update()
 {
-    if (states[getState()]->preUpdate(this))
+    std::string name = getState();
+    assert(name.length());
+    if (states[name]->preUpdate(this))
         return;
 
     for (int i = 0; i < children.size(); i++)
