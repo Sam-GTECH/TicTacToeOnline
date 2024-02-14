@@ -95,8 +95,7 @@ void GameManager::handleInput()
 
         if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
         {    
-            std::map<int, int> message = onlineManage->c_message;
-            onlineManage->sendMessage(message);
+            
         }
         states[getState()]->handleInput(this, event);
     }

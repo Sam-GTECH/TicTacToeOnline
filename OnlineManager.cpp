@@ -64,25 +64,13 @@ void OnlineManager::writeJSON(std::string filename, std::string data)
 	o << std::setw(4) << getData(data) << std::endl;
 }
 
-void OnlineManager::sendMessage(std::map<int, int> mapEnvoie) {
-    iResult = getaddrinfo(IP_ADDRESS, DEFAULT_PORT, &hints, &result);
-
-    for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
-        ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype,
-            ptr->ai_protocol);
-
-        printf("Message Sent: %s\n", mapEnvoie);
-    }
+void OnlineManager::sendMessage(json message) {
     
-    if (iResult == SOCKET_ERROR) {
-        printf("send failed with error: %d\n", WSAGetLastError());
-        closesocket(ConnectSocket);
-        WSACleanup();
-        exit(1); // Vous pouvez modifier la gestion des erreurs selon vos besoins
-    }
-    const char* message = mapToJsonString(mapEnvoie);
+    std::string messageEnvoie = message.dump();
 
-    int iResult = send(ConnectSocket, message, (int)strlen(message), 0);
+    iResult = send(m_ConnectSocket, messageEnvoie.c_str(), (int)strlen(messageEnvoie.c_str()), 0);
+    printf("nombre byte:%d\n", iResult);
+    printf("ERREUR : %d\n", WSAGetLastError());
 }
 
 
@@ -231,7 +219,8 @@ HWND MakeWorkerWindow(void) {
 
 bool OnlineManager::ConnectServeur() {
     WSADATA wsaData;
-    SOCKET ConnectSocket = INVALID_SOCKET;
+
+    m_ConnectSocket = INVALID_SOCKET;
 
     MSG msg;
 
@@ -282,29 +271,29 @@ bool OnlineManager::ConnectServeur() {
         WSACleanup();
         return 1;
     }
-
+    
     for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
-        ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype,
+        m_ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype,
             ptr->ai_protocol);
-        if (ConnectSocket == INVALID_SOCKET) {
+        if (m_ConnectSocket == INVALID_SOCKET) {
             printf("socket failed with error: %ld\n", WSAGetLastError());
             WSACleanup();
             return 1;
         }
 
-        iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+        iResult = connect(m_ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
         if (iResult == SOCKET_ERROR) {
-            closesocket(ConnectSocket);
-            ConnectSocket = INVALID_SOCKET;
+            closesocket(m_ConnectSocket);
+            m_ConnectSocket = INVALID_SOCKET;
             continue;
         }
-        WSAAsyncSelect(ConnectSocket, Window, WM_SOCKET, FD_READ | FD_CLOSE);
+        WSAAsyncSelect(m_ConnectSocket, Window, WM_SOCKET, FD_READ | FD_CLOSE);
         return true;
         break;
 
         freeaddrinfo(result);
 
-        if (ConnectSocket == INVALID_SOCKET) {
+        if (m_ConnectSocket == INVALID_SOCKET) {
             printf("Unable to connect to server!\n");
             WSACleanup();
             return 1;
@@ -314,7 +303,7 @@ bool OnlineManager::ConnectServeur() {
 
         while (true);
 
-        closesocket(ConnectSocket);
+        closesocket(m_ConnectSocket);
         WSACleanup();
 
 
@@ -356,10 +345,3 @@ bool OnlineManager::ConnectServeur() {
     
 }
 
-std::string mapToJsonString(const std::map<std::string, std::string>& mapData) {
-    Json::Value root;
-    for (const auto& pair : mapData) {
-        root[pair.first] = pair.second;
-    }
-    return root.toStyledString();
-}

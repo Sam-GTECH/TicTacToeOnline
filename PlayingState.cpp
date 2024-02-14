@@ -38,6 +38,17 @@ void PlayingState::handleInput(GameManager* game, sf::Event event)
             {
                 obj->handleInput(game, event, this);
                 checkVictory(game);
+
+                //std::map<int, int> message = onlineManage->c_message;
+                std::string player;
+                int casePos;
+
+                json message = {
+                    {"player", IP_ADDRESS },
+                    {"casePos", i}
+                };                
+                
+                game->onlineManage->sendMessage(message);
             }
         }
     }

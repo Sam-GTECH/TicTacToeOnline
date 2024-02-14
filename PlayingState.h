@@ -1,6 +1,7 @@
 #pragma once
 #include "State.h"
 #include "Grid.h"
+#include "OnlineManager.h"
 
 class Grid;
 
