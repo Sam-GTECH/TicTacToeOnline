@@ -64,17 +64,26 @@ void OnlineManager::writeJSON(std::string filename, std::string data)
 	o << std::setw(4) << getData(data) << std::endl;
 }
 
-/*void OnlineManager::sendMessage(const char* message) {
+void OnlineManager::sendMessage(std::map<int, int> mapEnvoie) {
+    iResult = getaddrinfo(IP_ADDRESS, DEFAULT_PORT, &hints, &result);
 
-    int iResult = send(ConnectSocket, message, (int)strlen(message), 0);
+    for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
+        ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype,
+            ptr->ai_protocol);
+
+        printf("Message Sent: %s\n", mapEnvoie);
+    }
+    
     if (iResult == SOCKET_ERROR) {
         printf("send failed with error: %d\n", WSAGetLastError());
         closesocket(ConnectSocket);
         WSACleanup();
         exit(1); // Vous pouvez modifier la gestion des erreurs selon vos besoins
     }
-    printf("Message Sent: %s\n", message);
-}*/
+    const char* message = mapToJsonString(mapEnvoie);
+
+    int iResult = send(ConnectSocket, message, (int)strlen(message), 0);
+}
 
 
 //Create window
@@ -149,7 +158,7 @@ void CreateSocketInformation(SOCKET s) {
 
 LPSOCKET_INFORMATION GetSocketInformation(SOCKET s) {
     SOCKET_INFORMATION* SI = SocketInfoList;
-    while (SI) {
+    while (SI) { 
         if (SI->Socket == s)
             return SI;
         SI = SI->Next;
@@ -343,6 +352,14 @@ bool OnlineManager::ConnectServeur() {
 
         return true;
     }
+
+    
 }
 
-
+std::string mapToJsonString(const std::map<std::string, std::string>& mapData) {
+    Json::Value root;
+    for (const auto& pair : mapData) {
+        root[pair.first] = pair.second;
+    }
+    return root.toStyledString();
+}

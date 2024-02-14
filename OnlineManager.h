@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <ws2tcpip.h>
 #include <stdlib.h>
+#include <json/json.h>
 
 #pragma comment (lib, "Ws2_32.lib")
 
@@ -40,7 +41,10 @@ class OnlineManager
 
 		void writeJSON(std::string filename, json data);
 		void writeJSON(std::string filename, std::string data);
-		void sendMessage(const char* message);
+		void sendMessage(std::map<int, int> message);
 		bool ConnectServeur();
 		HWND createWindowServeur();
+
+protected:
+	int iResult;
 };
