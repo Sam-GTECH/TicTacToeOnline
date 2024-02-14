@@ -1,11 +1,8 @@
 ﻿  Serveur.cpp
-C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\Serveur.cpp(286,24): warning C4477: 'printf' : la chaîne de format '%d' nécessite un argument de type 'int', mais l'argument variadique 1 est de type 'SOCKET'
-C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\Serveur.cpp(286,24): message : utilisez '%lld' dans la chaîne de format
-C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\Serveur.cpp(286,24): message : utilisez '%Id' dans la chaîne de format
-C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\Serveur.cpp(286,24): message : utilisez '%I64d' dans la chaîne de format
-C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\Serveur.cpp(431,24): warning C4477: 'printf' : la chaîne de format '%d' nécessite un argument de type 'int', mais l'argument variadique 1 est de type 'WPARAM'
-C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\Serveur.cpp(431,24): message : utilisez '%lld' dans la chaîne de format
-C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\Serveur.cpp(431,24): message : utilisez '%Id' dans la chaîne de format
-C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\Serveur.cpp(431,24): message : utilisez '%I64d' dans la chaîne de format
-C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\Serveur.cpp(223): warning C4715: 'WinMain' : les chemins de contrôle ne retournent pas tous une valeur
+C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\Serveur.cpp(151,12): warning C4477: 'printf' : la chaîne de format '%d' nécessite un argument de type 'int', mais l'argument variadique 1 est de type 'SOCKET'
+C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\Serveur.cpp(151,12): message : utilisez '%lld' dans la chaîne de format
+C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\Serveur.cpp(151,12): message : utilisez '%Id' dans la chaîne de format
+C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\Serveur.cpp(151,12): message : utilisez '%I64d' dans la chaîne de format
+C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\Serveur.cpp(194,39): warning C4267: '=' : conversion de 'size_t' en 'ULONG', perte possible de données
+C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\Serveur.cpp(258,38): warning C4267: '=' : conversion de 'size_t' en 'ULONG', perte possible de données
   Serveur.vcxproj -> C:\Users\lguglielmini\source\repos\Sam-GTECH\TicTacToeOnline\Serveur\x64\Debug\Serveur.exe

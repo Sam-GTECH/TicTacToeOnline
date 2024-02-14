@@ -44,7 +44,7 @@ void PlayingState::handleInput(GameManager* game, sf::Event event)
                 int casePos;
 
                 json message = {
-                    {"player", IP_ADDRESS },
+                    {"player", playerTurn },
                     {"casePos", i}
                 };                
                 

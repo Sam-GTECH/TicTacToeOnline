@@ -88,6 +88,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             FreeSocketInformation(wParam);
         }
         else {
+            int g_player; // Variable globale pour stocker le joueur
+            char g_casePos; // Variable globale pour stocker la position du cas
+
             printf("Socket looks fine!\n");
             switch (WSAGETSELECTEVENT(lParam)) {
 
@@ -110,12 +113,29 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                             }
                         }
                         else { // No error so update the byte count
-                            SocketInfo->DataBuf.buf[RecvBytes] = 0;
-                            printf(SocketInfo->DataBuf.buf);
-                            OutputDebugStringA("\n");
+                            SocketInfo->DataBuf.buf[RecvBytes] = '\0'; // Null terminate the received data
+                            printf("Received data: %s\n", SocketInfo->DataBuf.buf);
+
+                            // Now parse the received data to get player and casePos
+                            sscanf(SocketInfo->DataBuf.buf, "player %d à joué la case %c", &g_player, &g_casePos);
+                            printf("Player %d played case %c\n", g_player, g_casePos);
+
+                            // Now you have player and casePos, you can use them to construct the message to send
+                            json sendData;
+                            sendData["player"] = g_player;
+                            sendData["casePos"] = g_casePos;
+                            std::string message = sendData.dump(); // Convert JSON to string
+                            // Prepare the send buffer
+                            strcpy(SocketInfo->Buffer, message.c_str());
+                            SocketInfo->DataBuf.buf = SocketInfo->Buffer;
+                            SocketInfo->DataBuf.len = strlen(SocketInfo->Buffer);
+                            printf("testttttttttt");
+                            OutputDebugStringA(SocketInfo->DataBuf.buf);
                         }
                     }
                     break;
+
+
                 case FD_CLOSE:
                     printf("Closing socket %d\n", wParam);
                     FreeSocketInformation(wParam);
@@ -144,9 +164,11 @@ void CreateSocketInformation(SOCKET s) {
     SocketInfoList = SI;
 }
 
-LPSOCKET_INFORMATION GetSocketInformation(SOCKET s) {
+LPSOCKET_INFORMATION GetSocketInformation(SOCKET s)
+{
     SOCKET_INFORMATION* SI = SocketInfoList;
-    while (SI) { 
+    while (SI)
+    {
         if (SI->Socket == s)
             return SI;
         SI = SI->Next;
