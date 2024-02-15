@@ -36,14 +36,13 @@ bool GameManager::Init(int width, int height)
 
     onlineManage = new OnlineManager();
     //onlineManage->createWindowServeur();
-    if (Connect() == true) {
-        setState("PLAYING");
+    if (Connect() == true) {        
         return true;
     }
     else {
         return false;
     }
-    
+    setState("PLAYING");
 }
 
 void GameManager::Uninit()
